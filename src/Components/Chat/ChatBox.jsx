@@ -5,11 +5,9 @@ export default function ChatBox() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
-
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
   useEffect(() => {
     if (open && messages.length === 0) {
       setMessages([
@@ -42,7 +40,6 @@ export default function ChatBox() {
 
   return (
     <>
-      {/* Floating Icon */}
       <button
         onClick={() => setOpen(!open)}
         className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-blue-600 text-white 
@@ -56,7 +53,6 @@ export default function ChatBox() {
         />
       </button>
 
-      {/* Chat Window */}
       <div
         className={`fixed bottom-24 right-6 w-80 h-[440px] bg-white rounded-2xl shadow-2xl
                     flex flex-col overflow-hidden z-[9998]
