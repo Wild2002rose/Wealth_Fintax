@@ -4,23 +4,38 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        c1: { bg: "#f1d9efff", text: "#b708a0ff" },
-        c2: { bg: "#f7eab5ff", text: "#cf570dff" },
-        c3: { bg: "#ebd1e1ff", text: "#ae1172ff" },
-        c4: { bg: "#DBEAFE", text: "#1E3A8A" },
-        c5: { bg: "#F3E8FF", text: "#580d96ff" },
-        c6: { bg: "#FFEDD5", text: "#9A3412" },
-        c7: { bg: "#D1FAE5", text: "#065F46" },
-        c8: { bg: "#EDE9FE", text: "#5B21B6" },
-        c9: { bg: "#d6f1efff", text: "#16978fff" },
-        c10: { bg: "#F0F9FF", text: "#075985" },
-        c11: { bg: "#FEF9C3", text: "#713F12" },
-        c12: { bg: "#E2E8F0", text: "#1E293B" },
-        c13: { bg: "#FDF2F8", text: "#9D174D" },
-        c14: { bg: "#E0E7FF", text: "#3429d0ff" },
-        c15: { bg: "#ECFDF5", text: "#065F46" },
+        // ===== Brand Primary =====
+        primary: {
+          dark: "#0A1448",   
+          default: "#102A6B", 
+          light: "#1D3F8C",   
+        },
+
+        // ===== Body Background =====
+        body: "#F1F5FF", 
+
+        // ===== Accent Colors =====
+        accent: {
+          gold: "#FACC15",      
+          goldLight: "#FFEAA7", 
+        },
+
+        // ===== Neutrals =====
+        neutral: {
+          light: "#F7F9FC", 
+          white: "#FFFFFF", 
+          border: "#E6E9EF", 
+          textPrimary: "#0A0F1F",
+          textSecondary: "#64748B",
+        },
+
+        // ===== Status Colors =====
+        success: "#16A34A",
+        warning: "#F59E0B",
+        error: "#DC2626",
       },
     },
+
   },
   plugins: [],
 };
