@@ -1,5 +1,6 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { registerUser, loginUser } from "../../Services/AuthService";
 import {
   faRefresh,
   faSignIn,
@@ -7,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../Assets/Logos/WFSLogo.png";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function Nav() {
   const navItems = ["Home", "Services", "Industries", "Careers", "About Us"];
@@ -70,6 +72,128 @@ function Nav() {
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phoneNumber: "",
+    address: "",
+  });
+
+  const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
+  const [loginData, setLoginData] = useState({
+    userId: "",
+    password: "",
+  });
+  const [loginError, setLoginError] = useState({});
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prevFormData) => {
+      const updatedData = {
+        ...prevFormData,
+        [name]: value,
+      };
+      localStorage.setItem('registrationFormData', JSON.stringify(updatedData));
+      return updatedData;
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
+    setSuccessMessage("");
+    try {
+      const response = await registerUser(formData);
+      
+      await Swal.fire({
+      icon: "success",
+      title: "Registration Successful",
+      text: `Your User ID is ${response.data.userId}`,
+      confirmButtonColor: "#facc15",
+    });
+      setSuccessMessage(
+        "Registration successful! Your User ID is: " + response.data.userId
+      );
+      setShowRegister(false);
+      setShowLogin(true);
+      clearAuthStorage();
+      localStorage.removeItem('registrationFormData');
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        phoneNumber: "",
+        address: "",
+      });
+    } catch (error) {
+      Swal.fire({
+      icon: "error",
+      title: "Registration Failed",
+      text:
+        error.response?.data?.message ||
+        "Something went wrong. Please try again.",
+      confirmButtonColor: "#ef4444",
+    });
+      setErrors({
+        error:
+          error.response?.data?.message ||
+          "Registration failed. Please try again.",
+      });
+    }
+  };
+
+  const handleLoginChange = (e) => {
+    const { name, value } = e.target;
+    setLoginData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
+    setSuccessMessage("");
+    try {
+      const response = await loginUser(loginData);
+      
+      await Swal.fire({
+      icon: "success",
+      title: "Login Successful",
+      text: "Welcome back!",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+      setSuccessMessage(
+        "Login successful! Your User ID is: " + response.data.userId
+      );
+      setShowLogin(false);
+      clearAuthStorage();
+    } catch (error) {
+      Swal.fire({
+      icon: "error",
+      title: "Login Failed",
+      text:
+        error.response?.data?.message ||
+        "Invalid User ID or Password",
+      confirmButtonColor: "#ef4444",
+    });
+      setErrors({
+        error:
+          error.response?.data?.message || "Login failed. Please try again.",
+      });
+    }
+  };
+
+  const clearAuthStorage = () => {
+  localStorage.removeItem("token");
+  // localStorage.removeItem("user");
+  sessionStorage.removeItem("token");
+};
+
 
   return (
     <>
@@ -146,11 +270,17 @@ function Nav() {
               Client Login
             </h2>
 
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleLoginSubmit}>
+              {loginError.error && (
+                <p className="text-red-500 text-sm">{loginError.error}</p>
+              )}
               <div>
                 <label className="font-medium text-primary-dark">User ID</label>
                 <input
                   type="text"
+                  name="userId"
+                  value={loginData.userId}
+                  onChange={handleLoginChange}
                   className="w-full px-4 py-2 mt-1 border border-neutral-border rounded-lg focus:ring-primary-light focus:ring-2 outline-none"
                   placeholder="Enter your User ID"
                 />
@@ -162,6 +292,9 @@ function Nav() {
                 </label>
                 <input
                   type="password"
+                  name="password"
+                  value={loginData.password}
+                  onChange={handleLoginChange}
                   className="w-full px-4 py-2 mt-1 border border-neutral-border rounded-lg focus:ring-primary-light focus:ring-2 outline-none"
                   placeholder="Enter your Password"
                 />
@@ -172,6 +305,7 @@ function Nav() {
                 </button>
               </div>
               <button
+                type="submit"
                 className="w-full py-2 bg-accent-gold text-primary-dark font-bold rounded-lg 
              shadow-md hover:bg-accent-goldLight
              transform transition-all duration-300 
@@ -211,35 +345,65 @@ function Nav() {
             <h2 className="text-2xl font-bold text-primary-dark text-center mb-6">
               Create an Account
             </h2>
-
-            <form className="space-y-4">
+            {/* {errors && <p className="error">{errors.message}</p>}
+            {successMessage && (
+              <p className="text-green-600 text-sm">{successMessage}</p>
+            )} */}
+            <form className="space-y-2" onSubmit={handleSubmit}>
               <div>
                 <label className="font-medium text-primary-dark">
                   Full Name
                 </label>
                 <input
                   type="text"
+                  name="name"
                   className="w-full px-4 py-2 mt-1 border border-neutral-border rounded-lg 
                        focus:ring-primary-light focus:ring-2 outline-none"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
                   placeholder="Enter your name"
-                />
-              </div>
-              <div>
-                <label className="font-medium text-primary-dark">User ID</label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-2 mt-1 border border-neutral-border rounded-lg 
-                       focus:ring-primary-light focus:ring-2 outline-none"
-                  placeholder="Choose a User ID"
                 />
               </div>
               <div>
                 <label className="font-medium text-primary-dark">Email</label>
                 <input
                   type="email"
-                  className="w-full px-4 py-2 mt-1 border border-neutral-border rounded-lg 
+                  name="email"
+                  className="w-full px-4 py-2 border border-neutral-border rounded-lg 
                        focus:ring-primary-light focus:ring-2 outline-none"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
                   placeholder="Enter your Email"
+                />
+              </div>
+              <div>
+                <label className="font-medium text-primary-dark">Address</label>
+                <input
+                  type="text"
+                  name="address"
+                  className="w-full px-4 py-2 border border-neutral-border rounded-lg 
+                       focus:ring-primary-light focus:ring-2 outline-none"
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter your Address"
+                />
+              </div>
+              <div>
+                <label className="font-medium text-primary-dark">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  className="w-full px-4 py-2 border border-neutral-border rounded-lg 
+                       focus:ring-primary-light focus:ring-2 outline-none"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter your Phone Number"
                 />
               </div>
               <div>
@@ -248,24 +412,30 @@ function Nav() {
                 </label>
                 <input
                   type="password"
-                  className="w-full px-4 py-2 mt-1 border border-neutral-border rounded-lg 
+                  name="password"
+                  className="w-full px-4 py-2 border border-neutral-border rounded-lg 
                        focus:ring-primary-light focus:ring-2 outline-none"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
                   placeholder="Create Password"
                 />
               </div>
 
               <div>
                 <label className="font-medium text-primary-dark">
-                  Password
+                  Confirm Password
                 </label>
                 <input
                   type="password"
-                  className="w-full px-4 py-2 mt-1 border border-neutral-border rounded-lg 
+                  className="w-full px-4 py-2 border border-neutral-border rounded-lg 
                        focus:ring-primary-light focus:ring-2 outline-none"
+                  required
                   placeholder="Confirm Password"
                 />
               </div>
               <button
+                type="submit"
                 className="w-full py-2 bg-accent-gold text-primary-dark font-bold rounded-lg 
                      shadow-md hover:bg-accent-goldLight transform transition-all duration-300 
                      hover:scale-[1.03] hover:shadow-xl active:scale-[0.97]"

@@ -5,9 +5,11 @@ import Home from "./Components/Home";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 function App() {
   return (
-    <BrowserRouter className="App">
-      <Home/>
-      <ChatBox/>
+    <BrowserRouter className="App h-screen overflow-hidden">
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+      <ChatBox />
     </BrowserRouter>
   );
 }

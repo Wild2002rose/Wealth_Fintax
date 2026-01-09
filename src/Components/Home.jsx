@@ -18,7 +18,7 @@ function Home() {
   }, [expanded]);
 
   return (
-    <div className="min-h-screen bg-body">
+    <div className="bg-body max-h-screen overflow-hidden">
       <Nav />
 
       <section className="flex justify-center px-6 mt-28">
@@ -125,7 +125,6 @@ function Home() {
 
       <Footer />
 
-      {/* Animation keyframes */}
       <style>
         {`
           @keyframes fadeInUp {

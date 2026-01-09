@@ -12,7 +12,7 @@ function Footer() {
     <footer className="bg-neutral-white border-t border-neutral-border mt-14">
       <div className="max-w-7xl mx-auto px-4 py-4">
 
-        <div className="flex flex-col md:flex-row justify-between gap-6">
+        <div className="flex md:flex-row justify-between ">
           <div>
             <h4 className="text-sm font-semibold text-primary mb-2">
               Contact Information
@@ -41,9 +41,8 @@ function Footer() {
             </ul>
           </div>
 
-          {/* Social Links */}
-          <div>
-            <h4 className="text-sm font-semibold text-primary mb-2">
+          <div className="mr-20">
+            <h4 className="text-sm font-semibold text-primary mb-2 ">
               Connect With Us
             </h4>
 
@@ -79,7 +78,6 @@ function Footer() {
           </div>
         </div>
 
-        {/* Divider */}
         <div className="border-t border-neutral-border mt-2 pt-2 text-center">
           <p className="text-xs text-neutral-textSecondary">
             © {new Date().getFullYear()} WealthGrow Fintax Services. All rights reserved.
